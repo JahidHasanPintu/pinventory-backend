@@ -9,7 +9,7 @@ const authRoutes = require("./routes/authRoutes");
 const organizationRoutes = require("./routes/organizationRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const subscriptionRoutes = require("./routes/subscriptionRoutes");
-
+const inventoryRoutes = require("./routes/inventoryRoutes");
 const app = express();
 
 // Middleware
@@ -23,6 +23,7 @@ app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
 app.use("/api/auth", authRoutes);
 app.use("/api/organizations", organizationRoutes);
 app.use("/api/payments", paymentRoutes);
+app.use("/api/inventory", inventoryRoutes);
 
 app.use("/api/subscriptions", subscriptionRoutes);
 //intial root directory

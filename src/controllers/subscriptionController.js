@@ -95,4 +95,25 @@ const cancelSubscription = async (req, res) => {
     }
 };
 
-module.exports = { createSubscription, getSubscriptions, getSubscriptionByOrg, checkSubscriptionStatus, cancelSubscription };
+const expireSubscriptionsNow = async (req, res) => {
+    try {
+        const expiredSubscriptions = await Subscription.findAll({
+            where: { endDate: { [Op.lt]: new Date() }, status: "active" }
+        });
+        console.log(expiredSubscriptions);
+        
+        if (expiredSubscriptions.length === 0) {
+            return res.json({ message: "No subscriptions to expire." });
+        }
+
+        await Subscription.update({ status: "expired" }, {
+            where: { id: expiredSubscriptions.map(sub => sub.id) }
+        });
+
+        res.json({ message: `Expired ${expiredSubscriptions.length} subscriptions.` });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
+};
+
+module.exports = { createSubscription, getSubscriptions, getSubscriptionByOrg, checkSubscriptionStatus, cancelSubscription,expireSubscriptionsNow };
